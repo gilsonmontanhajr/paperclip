@@ -48,6 +48,10 @@ RUN test -f server/dist/index.js || (echo "ERROR: server build output missing" &
 FROM base AS production
 ARG USER_UID=1000
 ARG USER_GID=1000
+# Declare all Coolify-injected build args so they can be promoted to runtime ENV
+ARG DATABASE_URL
+ARG BETTER_AUTH_SECRET
+ARG PAPERCLIP_PUBLIC_URL
 WORKDIR /app
 COPY --from=build /app /app
 RUN npm install --global --omit=dev @anthropic-ai/claude-code@latest @openai/codex@latest opencode-ai @google/gemini-cli \
@@ -72,7 +76,10 @@ ENV NODE_ENV=production \
   PAPERCLIP_CONFIG=/paperclip/instances/default/config.json \
   PAPERCLIP_DEPLOYMENT_MODE=authenticated \
   PAPERCLIP_DEPLOYMENT_EXPOSURE=private \
-  OPENCODE_ALLOW_ALL_MODELS=true
+  OPENCODE_ALLOW_ALL_MODELS=true \
+  DATABASE_URL=${DATABASE_URL} \
+  BETTER_AUTH_SECRET=${BETTER_AUTH_SECRET} \
+  PAPERCLIP_PUBLIC_URL=${PAPERCLIP_PUBLIC_URL}
 
 VOLUME ["/paperclip"]
 EXPOSE 3100
