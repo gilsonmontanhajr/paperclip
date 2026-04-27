@@ -46,6 +46,7 @@ RUN pnpm --filter @paperclipai/server build
 RUN test -f server/dist/index.js || (echo "ERROR: server build output missing" && exit 1)
 
 FROM base AS production
+USER node
 ARG USER_UID=1000
 ARG USER_GID=1000
 WORKDIR /app
