@@ -59,7 +59,6 @@ RUN npm install --global --omit=dev @anthropic-ai/claude-code@latest @openai/cod
 
 COPY scripts/docker-entrypoint.sh /usr/local/bin/
 RUN chmod +x /usr/local/bin/docker-entrypoint.sh
-USER node
 
 ENV NODE_ENV=production \
   HOME=/paperclip \
