@@ -12,18 +12,16 @@ changed=0
 if [ "$(id -u node)" -ne "$PUID" ]; then
     echo "Updating node UID to $PUID"
     usermod -o -u "$PUID" node
-    changed=1
 fi
 
 if [ "$(id -g node)" -ne "$PGID" ]; then
     echo "Updating node GID to $PGID"
     groupmod -o -g "$PGID" node
     usermod -g "$PGID" node
-    changed=1
 fi
 
-if [ "$changed" = "1" ]; then
-    chown -R node:node /paperclip
-fi
+# Always fix ownership of the volume mount — Docker mounts a fresh volume as
+# root:root at runtime, regardless of what was chown'd at image build time.
+chown node:node /paperclip
 
 exec gosu node "$@"
